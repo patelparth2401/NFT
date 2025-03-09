@@ -1,8 +1,17 @@
 import PropTypes from 'prop-types';
 
-function NFTCard({ nft }) {
+function NFTCard({ nft, onNFTClick }) {
+  const handleClick = () => {
+    // Pass identifier and contract to the parent component
+    console.log('NFT clicked:', nft.identifier, nft.contract);
+    onNFTClick(nft.identifier, nft.contract);
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
+    <div
+      className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 cursor-pointer"
+      onClick={handleClick}
+    >
       <img
         src={nft.display_image_url || nft.image_url}
         alt={nft.name}
@@ -17,6 +26,7 @@ function NFTCard({ nft }) {
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 inline-block text-blue-500 hover:text-blue-700 font-medium"
+          onClick={(e) => e.stopPropagation()} // Prevent link click from triggering card click
         >
           View on OpenSea
         </a>
@@ -25,7 +35,6 @@ function NFTCard({ nft }) {
   );
 }
 
-// PropTypes for type checking (optional but recommended)
 NFTCard.propTypes = {
   nft: PropTypes.shape({
     name: PropTypes.string.isRequired,
@@ -33,7 +42,10 @@ NFTCard.propTypes = {
     display_image_url: PropTypes.string,
     image_url: PropTypes.string,
     opensea_url: PropTypes.string.isRequired,
+    identifier: PropTypes.string.isRequired,
+    contract: PropTypes.string.isRequired,
   }).isRequired,
+  onNFTClick: PropTypes.func.isRequired,
 };
 
 export default NFTCard;

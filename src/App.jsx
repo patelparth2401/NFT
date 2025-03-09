@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import NFTCard from './components/NFTCard'; // Import the new component
+import NFTCard from './components/NFTCard';
+import NFTDetails from './components/NFTDetails';
 import './index.css';
 
 function App() {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedNFT, setSelectedNFT] = useState(null);
 
   useEffect(() => {
     const fetchNfts = async () => {
@@ -29,6 +31,11 @@ function App() {
     fetchNfts();
   }, []);
 
+  const handleNFTClick = (identifier, contract) => {
+    console.log('Received in App:', identifier, contract); // Debug log
+    setSelectedNFT({ identifier, contract });
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -46,9 +53,15 @@ function App() {
       <h1 className="text-4xl font-bold text-center mb-8">Sneakers NFT Collection</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4">
         {nfts.map((nft) => (
-          <NFTCard key={nft.identifier} nft={nft} />
+          <NFTCard key={nft.identifier} nft={nft} onNFTClick={handleNFTClick} />
         ))}
       </div>
+      {selectedNFT && (
+        <NFTDetails
+          identifier={selectedNFT.identifier}
+          contract={selectedNFT.contract}
+        />
+      )}
     </div>
   );
 }
