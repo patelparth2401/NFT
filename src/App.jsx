@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import NFTCard from './components/NFTCard';
 import NFTDetails from './components/NFTDetails';
 import './index.css';
+import Modal from './components/Modal';
 
 function App() {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedNFT, setSelectedNFT] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchNfts = async () => {
@@ -34,6 +36,7 @@ function App() {
   const handleNFTClick = (identifier, contract) => {
     console.log('Received in App:', identifier, contract); // Debug log
     setSelectedNFT({ identifier, contract });
+    setIsModalOpen(true); // Open the modal
   };
 
   if (loading) {
@@ -50,18 +53,21 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8">Sneakers NFT Collection</h1>
+      <h1 className="text-4xl font-bold text-center text-blue-950 mb-8">Sneakers NFT Collection</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4">
         {nfts.map((nft) => (
           <NFTCard key={nft.identifier} nft={nft} onNFTClick={handleNFTClick} />
         ))}
       </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        
       {selectedNFT && (
         <NFTDetails
-          identifier={selectedNFT.identifier}
-          contract={selectedNFT.contract}
+        identifier={selectedNFT.identifier}
+        contract={selectedNFT.contract}
         />
       )}
+      </Modal>
     </div>
   );
 }
